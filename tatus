@@ -1,0 +1,4 @@
+[33m5bc10eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevin/1791614503-module1-setup[m[33m, [m[1;31morigin/devin/1791614503-module1-setup[m[33m)[m Add zero-setup demo profile (H2), VS Code run configs and demo web page
+[33m3cdad85[m Return 400 with fieldErrors for unknown enums and invalid sort properties
+[33m989717e[m Milestone 1: auth, profiles, activity logging and emission engine
+[33m84d928b[m[33m ([m[1;31morigin/main[m[33m)[m Initial commit
