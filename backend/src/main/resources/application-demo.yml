@@ -14,3 +14,5 @@ carbontrack:
   bootstrap-admin:
     email: ${ADMIN_EMAIL:admin@carbontrack.local}
     password: ${ADMIN_PASSWORD:Admin123!}
+cache:
+  type: simple

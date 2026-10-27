@@ -5,6 +5,15 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/carbontrack}
     username: ${DB_USERNAME:carbontrack}
     password: ${DB_PASSWORD:carbontrack}
+  data:
+   redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  cache:
+   type: redis
+   redis:
+    time-to-live: 600000
+
   jpa:
     open-in-view: false
     hibernate:

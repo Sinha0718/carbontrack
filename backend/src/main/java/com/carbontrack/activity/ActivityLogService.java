@@ -13,18 +13,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import com.carbontrack.badge.ActivityLoggedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Service
 @RequiredArgsConstructor
 public class ActivityLogService {
 
     private static final LocalDate EARLIEST_DATE = LocalDate.of(1970, 1, 1);
-
     private final ActivityLogRepository activityLogRepository;
     private final UserRepository userRepository;
     private final EmissionCalculationService emissionCalculationService;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
+
+    @CacheEvict(value = {"analyticsSummary", "analyticsByCategory"}, allEntries = true)
     @Transactional
     public ActivityLogResponse log(Long userId, ActivityType type, BigDecimal quantity, LocalDate logDate, String notes) {
         LocalDate date = logDate != null ? logDate : LocalDate.now(clock);
@@ -40,7 +45,9 @@ public class ActivityLogService {
         log.setEmissionFactor(emission.factor());
         log.setLogDate(date);
         log.setNotes(notes);
-        return ActivityLogResponse.from(activityLogRepository.save(log));
+        ActivityLog saved = activityLogRepository.save(log);
+        eventPublisher.publishEvent(new ActivityLoggedEvent(userId, date));
+        return ActivityLogResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
@@ -62,6 +69,7 @@ public class ActivityLogService {
         return ActivityLogResponse.from(findOwned(userId, id));
     }
 
+    @CacheEvict(value = {"analyticsSummary", "analyticsByCategory"}, allEntries = true)
     @Transactional
     public void delete(Long userId, Long id) {
         activityLogRepository.delete(findOwned(userId, id));
